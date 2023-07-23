@@ -4,11 +4,9 @@ export default async function handler(req, res) {
   try {
     const newsData = await axios.get("http://localhost:3000/api/getNewsData");
 
-    if (
-      process.env.lastPublishedValue !== newsData.data.articles[0].publishedAt
-    ) {
-      const textPrompt = req.body.textForImage;
-
+    // if (
+    //   process.env.lastPublishedValue !== newsData.data.articles[0].publishedAt
+    // ) {
       const options = {
         method: "POST",
         url: "https://omniinfer.p.rapidapi.com/v2/txt2img",
@@ -57,14 +55,19 @@ export default async function handler(req, res) {
 
       const response1 = await axios.request(options1);
 
+      process.env.lastPublishedValue = newsData.data.articles[0].publishedAt;
+
       res.status(200).json({
-        aiImage: response1.data.data.imgs[0],
-        newsImage: newsData.data.articles[0].image,
-        newsData: newsData.data,
+        response: {
+          message:"Success",
+          aiImage: response1.data.data.imgs[0],
+          newsImage: newsData.data.articles[0].image,
+          newsData: newsData.data,
+        },
       });
-    } else {
-      res.status(204).send("Not gonna publish");
-    }
+    // } else {
+    //   res.status(200).json({ response: "Same data present" });
+    // }
   } catch (error) {
     res.status(500).json(error);
   }
