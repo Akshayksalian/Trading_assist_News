@@ -15,9 +15,7 @@ function Home() {
     try {
       const mediaId = await axios.get("./api/textToImage");
       setMediaData(mediaId.data);
-      console.log(mediaData);
       setLoading(false);
-      console.log(mediaData);
     } catch (error) {
       setLoading(false);
     }
