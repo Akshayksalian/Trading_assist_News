@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default async function handler(req, res) {
   try {
-    const newsData = await axios.get("http://localhost:3000/api/getNewsData");
+    const newsData = await axios.get(`https://${req.headers.host}/api/getNewsData`);
 
     // if (
     //   process.env.lastPublishedValue !== newsData.data.articles[0].publishedAt
@@ -12,6 +12,7 @@ export default async function handler(req, res) {
         url: "https://omniinfer.p.rapidapi.com/v2/txt2img",
         headers: {
           "content-type": "application/json",
+          'X-Omni-Key': 'd1dc39f7-a1d3-4441-a4ad-3e0defb6ac6a',
           "X-RapidAPI-Key":
             "1ccb934de6msha4ae1d218201d21p14cd9djsn144541d3ed37",
           "X-RapidAPI-Host": "omniinfer.p.rapidapi.com",
@@ -47,6 +48,7 @@ export default async function handler(req, res) {
           task_id: response.data.data.task_id,
         },
         headers: {
+          'X-Omni-Key': 'd1dc39f7-a1d3-4441-a4ad-3e0defb6ac6a',
           "X-RapidAPI-Key":
             "1ccb934de6msha4ae1d218201d21p14cd9djsn144541d3ed37",
           "X-RapidAPI-Host": "omniinfer.p.rapidapi.com",
