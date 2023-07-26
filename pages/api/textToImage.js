@@ -6,9 +6,9 @@ export default async function handler(req, res) {
       `http://${req.headers.host}/api/getNewsData`
     );
 
-    if (
-      process.env.lastPublishedValue !== newsData.data.articles[0].publishedAt
-    ) {
+    // if (
+    //   process.env.lastPublishedValue !== newsData.data.articles[0].publishedAt
+    // ) {
     const options = {
       method: "POST",
       url: "https://omniinfer.p.rapidapi.com/v2/txt2img",
@@ -69,7 +69,8 @@ export default async function handler(req, res) {
       },
     });
 
-    // } else {
+    // }
+    //  else {
     //   res.status(200).json({ response: "Same data present" });
     // }
   } catch (error) {
