@@ -1,33 +1,21 @@
 import db from "@/firebase/initFirebase";
-import {
-  doc,
-  onSnapshot,
-  updateDoc,
-  setDoc,
-  deleteDoc,
-  collection,
-  serverTimestamp,
-  getDocs,
-  getDoc,
-  query,
-  where,
-  orderBy,
-  limit,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 export default async function handler(req, res) {
   try {
-
     const colletionRef = collection(db, "NewsData");
 
-    const docRef = doc(db, "NewsData", "valuesForValidation");
-    const docSnap = await getDoc(docRef);
+    const docSnap = await getDocs(colletionRef);
 
-    // const querySnapshot = await getDocs(colletionRef);
+    const items = [];
 
+    docSnap.docs.forEach((doc) => {
+      items.push({ ...doc.data(), id: doc.id });
+    });
 
-    // res.status(200).json(docSnap._document.data.value.mapValue.fields.lastPublishedDate.stringValue);
-    res.status(200).json(docSnap._document.data.value.mapValue.fields.lastPublishedDate.stringValue);
+    const finalValue = items.find((item) => item.id === "valuesForValidation");
+
+    res.status(200).json(finalValue);
   } catch (error) {
     res.status(500).json(error);
   }

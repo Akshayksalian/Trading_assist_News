@@ -34,10 +34,10 @@ export default async function handler(req, res) {
       "\n\n" +
       contentData.description +
       "\n\n" +
-      contentData.content +
-      "\n" +
       "IST : " +
-      finalDate.toLocaleString();
+      finalDate.toLocaleString() +
+      "\n\n" +
+      "DM for credit or removal request (No copyright intended) All rights and credits reserved to the respective owner(s)";
 
     const containerParameter = {
       image_url: imageUrl,
