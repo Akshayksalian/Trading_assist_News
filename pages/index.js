@@ -23,20 +23,6 @@ function Automate() {
         previousDate.data.lastPublishedDate
       ) {
         createInstagramPost();
-
-        const editParams = {
-          collectionId: "NewsData",
-          documentId: "valuesForValidation",
-          data: {
-            lastPublishedDate: mediaData.articles[0].publishedAt,
-          },
-        };
-
-        const updateDate = await axios.post("./api/firebase/edit", editParams);
-
-        // console.log(updateDate);
-      } else {
-        console.log(previousDate.data.lastPublishedDate);
       }
 
       setLoading(false);
@@ -55,21 +41,34 @@ function Automate() {
         publishedAt: mediaData.articles[0].publishedAt,
       };
 
+      console.log("1");
+
       const postData = await axios.post(
         "./api/createContainer",
         dataForContainer
       );
 
       console.log(postData.data);
+      console.log("2");
+
+      const editParams = {
+        collectionId: "NewsData",
+        documentId: "valuesForValidation",
+        data: {
+          lastPublishedDate: mediaData.articles[0].publishedAt,
+        },
+      };
+
+      const updateDate = await axios.post("./api/firebase/edit", editParams);
     } catch (error) {}
   }
 
-  useEffect(() => {
-    getNews();
-    const interval = setInterval(async () => {
-      await getNews(); // API call
-    }, 60000 * 60); // equal to 1 min * 60
-  }, []);
+  // useEffect(() => {
+  //   getNews();
+  //   const interval = setInterval(async () => {
+  //     await getNews(); // API call
+  //   }, 60000 * 60); // equal to 1 min * 60
+  // }, []);
 
   //   useEffect(() => {
   //     getNews();
