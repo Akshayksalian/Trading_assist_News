@@ -1,84 +1,70 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Button from "react-bootstrap/Button";
-import Stack from "react-bootstrap/Stack";
 import Spinner from "react-bootstrap/Spinner";
-import Image from "react-bootstrap/Image";
-import Accordion from "react-bootstrap/Accordion";
-import Badge from "react-bootstrap/Badge";
 
-function Automate() {
+function Index() {
   const [mediaData, setMediaData] = useState({});
+  const [firebaseData, setFirebaseData] = useState({});
   const [loading, setLoading] = useState(true);
 
-  async function getNews() {
+  async function getNewsData() {
     try {
-      const mediaId = await axios.get("./api/getNewsData");
-      setMediaData(mediaId.data);
+      const newsData = await axios.get("./api/getNewsData");
+      setMediaData(newsData.data);
+      setLoading(false);
 
-      const previousDate = await axios.get("./api/firebase/get");
+      const previousPublishedData = await axios.get("./api/firebase/get");
+      setFirebaseData(previousPublishedData.data);
 
       if (
-        mediaData.articles[0].publishedAt !==
-        previousDate.data.lastPublishedDate
+        newsData.data.articles[0].publishedAt !=
+        previousPublishedData.data.lastPublishedDate
       ) {
-        createInstagramPost();
+        const editParams = {
+          collectionId: "NewsData",
+          documentId: "valuesForValidation",
+          data: {
+            lastPublishedDate: newsData.data.articles[0].publishedAt,
+          },
+        };
+
+        const updateDate = await axios.post("./api/firebase/edit", editParams);
+
+        const dataForContainer = {
+          title: newsData.data.articles[0].title,
+          description: newsData.data.articles[0].description,
+          content: newsData.data.articles[0].content,
+          imageUrl: newsData.data.articles[0].image,
+          publishedAt: newsData.data.articles[0].publishedAt,
+        };
+
+        const postData = await axios.post(
+          "./api/createContainer",
+          dataForContainer
+        );
+
       }
-
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-    }
-  }
-
-  async function createInstagramPost() {
-    try {
-      const dataForContainer = {
-        title: mediaData.articles[0].title,
-        description: mediaData.articles[0].description,
-        content: mediaData.articles[0].content,
-        imageUrl: mediaData.articles[0].image,
-        publishedAt: mediaData.articles[0].publishedAt,
-      };
-
-      console.log("1");
-
-      const postData = await axios.post(
-        "./api/createContainer",
-        dataForContainer
-      );
-
-      console.log(postData.data);
-      console.log("2");
-
-      const editParams = {
-        collectionId: "NewsData",
-        documentId: "valuesForValidation",
-        data: {
-          lastPublishedDate: mediaData.articles[0].publishedAt,
-        },
-      };
-
-      const updateDate = await axios.post("./api/firebase/edit", editParams);
     } catch (error) {}
   }
 
-  // useEffect(() => {
-  //   getNews();
-  //   const interval = setInterval(async () => {
-  //     await getNews(); // API call
-  //   }, 60000 * 60); // equal to 1 min * 60
-  // }, []);
-
-  //   useEffect(() => {
-  //     getNews();
-  //   }, []);
+  useEffect(() => {
+    setInterval(async () => await getNewsData(), 60000 * 30);
+  }, []);
 
   if (loading) {
-    return <h1>Loading</h1>;
+    return (
+      <div className="bg-white position-absolute top-50 start-50 translate-middle">
+        <Spinner className="" animation="grow" variant="primary" />
+      </div>
+    );
   }
 
-  return <h1>Uploaded</h1>;
+  return (
+    <div className="bg-white position-absolute top-50 start-50 translate-middle">
+      <h1>Data from newsUrl : {mediaData.articles[0].publishedAt}</h1>
+      <h1>Data from firestore : {firebaseData.lastPublishedDate}</h1>
+    </div>
+  );
 }
 
-export default Automate;
+export default Index;
