@@ -42,14 +42,15 @@ function Index() {
           "./api/createContainer",
           dataForContainer
         );
-
       }
     } catch (error) {}
   }
 
-  useEffect(() => {
-    setInterval(async () => await getNewsData(), 60000 * 30);
-  }, []);
+  // useEffect(() => {
+  //   setInterval(async () => await getNewsData(), 60000 * 30);
+  // }, []);
+
+  useEffect(() => getNewsData(), []);
 
   if (loading) {
     return (
