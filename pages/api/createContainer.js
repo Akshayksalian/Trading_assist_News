@@ -60,7 +60,7 @@ export default async function handler(req, res) {
       publishParameter
     );
 
-    res.status(200).json(publishedMediaId.id);
+    res.status(200).json(publishedMediaId.data);
   } catch (error) {
     res.status(500).json(error);
   }
